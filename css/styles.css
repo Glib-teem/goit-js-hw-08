@@ -18,6 +18,7 @@ body {
   display: flex;
   flex-direction: column; /* Елементи розташовані вертикально */
   align-items: center; /* Центрування по горизонталі */
+  justify-content: center; /* Центрування по вертикалі */
   min-height: 100vh; /* Забезпечуємо, що body займає всю висоту вікна */
 }
 
@@ -34,14 +35,11 @@ body {
 
 /* Стилі для контейнера галереї */
 .gallery {
-  list-style: none; /* Прибираємо маркери списку */
+  list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0; /* Прибираємо зайвий верхній відступ для рівномірного центрування */
   display: grid;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(280px, 1fr)
-  ); /* Оптимізовано: адаптивні стовпці */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
   max-width: 1128px;
   width: 100%;
