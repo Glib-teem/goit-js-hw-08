@@ -66,6 +66,7 @@ const images = [
 
 // 1. Знаходжу контейнер галереї в DOM
 const galleryContainer = document.querySelector('.gallery');
+let autoZoomTimer = null;
 
 // 2. Створюю HTML-розмітку для всіх елементів галереї
 const galleryMarkup = images
@@ -103,22 +104,67 @@ function onGalleryItemClick(event) {
 
   // Отримую URL великого зображення з data-атрибута
   const largeImageUrl = event.target.dataset.source;
+  const description = event.target.alt; // Отримання alt атрибута
 
   console.log(largeImageUrl);
+
+  // Оголошую змінну autoZoomTimer у вищому scope, щоб вона була доступна для очищення
+  let autoZoomTimer = null;
 
   // Створюю модальне вікно з великим зображенням
   const instance = basicLightbox.create(
     `
-    <img src="${largeImageUrl}" width="800" height="600">
+    <img src="${largeImageUrl}" alt="${description}">
   `,
     {
-      // додаю опцію закриття
+      // додаю опцію закриття та автозум
       onShow: (instance) => {
         window.addEventListener('keydown', onEscKeyPress);
+
+        // Знаходжу зображення в lightbox
+        const img = instance.element().querySelector('img');
+
+        // Додаю автоматичний зум через 0.5 секунди
+        // Клас 'auto-zoomed' застосує плавне збільшення через transition в CSS
+        autoZoomTimer = setTimeout(() => {
+          img.classList.add('auto-zoomed');
+        }, 500); // 0.5 секунди затримки перед початком зуму
+
+        // Додаю обробник для перемикання зуму по кліку на зображення
+        img.addEventListener('click', () => {
+          // Якщо зображення автоматично збільшилось, то клік його зменшує до базового стану
+          if (img.classList.contains('auto-zoomed')) {
+            img.classList.remove('auto-zoomed');
+            img.classList.add('zoomed'); // Додаю клас для ручного зуму, якщо він потрібен після скидання
+          } else if (img.classList.contains('zoomed')) {
+            img.classList.remove('zoomed'); // Якщо вже зумовано, то зменшую
+          } else {
+            img.classList.add('zoomed'); // Якщо ні, то зумую
+          }
+        });
+
+        // Також додаю можливість скинути зум, якщо користувач клікне на фон lightbox
+        instance.element().addEventListener('click', (e) => {
+          if (e.target.tagName !== 'IMG') {
+            // Якщо клік не на зображенні, а на фоні
+            instance.close();
+          }
+        });
       },
 
       onClose: (instance) => {
         window.removeEventListener('keydown', onEscKeyPress);
+
+        // Очищую таймер при закритті, щоб уникнути помилок
+        if (autoZoomTimer) {
+          clearTimeout(autoZoomTimer);
+          autoZoomTimer = null;
+        }
+        // Забираю всі класи зуму, щоб при наступному відкритті починати з чистого стану
+        const img = instance.element().querySelector('img');
+        if (img) {
+          img.classList.remove('auto-zoomed', 'zoomed');
+        }
       },
     }
   );

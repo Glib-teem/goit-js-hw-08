@@ -16,28 +16,35 @@ body {
   color: #2e2f42;
   line-height: 1.5;
   display: flex;
-  flex-direction: column; /* Елементи розташовані вертикально */
-  align-items: center; /* Центрування по горизонталі */
-  justify-content: center; /* Центрування по вертикалі */
-  min-height: 100vh; /* Забезпечуємо, що body займає всю висоту вікна */
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
 }
 
 /* Стилі для посилання "назад" */
 .back-link {
-  width: 100%; /* Займає всю доступну ширину в flex-контейнері */
-  max-width: 1128px; /* Обмежує ширину до ширини галереї */
+  width: 100%;
+  max-width: 1128px;
   margin-bottom: 2rem;
-  padding-left: 2rem; /* Відступ зліва */
-  align-self: flex-start; /* Вирівнювання по лівому краю */
-  text-decoration: none; /* Прибираємо підкреслення */
-  color: inherit; /* Успадковуємо колір тексту від body */
+  padding-left: 2rem;
+  align-self: flex-start;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: #ccc;
 }
 
 /* Стилі для контейнера галереї */
 .gallery {
   list-style: none;
   padding: 0;
-  margin: 0; /* Прибираємо зайвий верхній відступ для рівномірного центрування */
+  margin: 0;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
@@ -65,7 +72,8 @@ body {
 .gallery-link {
   display: block;
   text-decoration: none;
-  height: 100%; /* Займає всю висоту батьківського елемента li */
+  height: 100%;
+  cursor: pointer;
 }
 
 .gallery-image {
@@ -81,71 +89,69 @@ body {
   transform: scale(1.05);
 }
 
-/* Стилі для модального вікна basicLightbox */
+/* Кастомні стилі для BasicLightbox */
 .basicLightbox {
-  background-color: rgba(0, 0, 0, 0.85); /* Темний, напівпрозорий фон */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
 .basicLightbox__placeholder {
-  max-width: 90%;
-  max-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
-/* Стилі для зображення в модальному вікні, включаючи зум */
 .basicLightbox__placeholder img {
   display: block;
   max-width: 100%;
   max-height: 100%;
-  object-fit: contain; /* Зображення повністю поміщається, не обрізається */
+  object-fit: contain;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
-  /* Властивості для зумування */
-  transform-origin: center center;
-  transition: transform 0.3s ease-in-out;
+  transform-origin: center center; /* Властивості для зумування */
+
+  transition: transform 3s ease-in-out; /* Збільшимо тривалість переходу для повільнішого зуму */
   cursor: zoom-in;
 }
 
-/* Клас для збільшеного стану зображення в модальному вікні */
-.basicLightbox__placeholder img.zoomed {
-  transform: scale(1.5);
-  cursor: zoom-out;
+/* Клас для автоматичного зуму в BasicLightbox */
+.basicLightbox__placeholder img.auto-zoomed {
+  transform: scale(1.2); /* Початковий зум, наприклад, 1.2x */
+  cursor: zoom-out; /* Курсор змінюємо після автоматичного зуму */
 }
 
 /* Адаптивність для різних розмірів екранів */
 @media screen and (max-width: 992px) {
   .gallery {
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(250px, 1fr)
-    ); /* Адаптивніше для середніх екранів */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 16px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .gallery {
-    grid-template-columns: 1fr; /* Один стовпець на маленьких екранах */
+    grid-template-columns: 1fr;
     gap: 12px;
   }
   .gallery-image {
-    height: 180px; /* Трохи менша висота для мобільних пристроїв */
+    height: 180px;
+  }
+  .basicLightbox__placeholder img.auto-zoomed {
+    transform: scale(2.2);
   }
 }
 
 @media screen and (max-width: 480px) {
   body {
-    padding: 10px; /* Зменшення padding на дуже малих екранах */
+    padding: 10px;
   }
   .gallery-image {
-    height: 150px; /* Ще менша висота */
+    height: 150px;
   }
   .back-link {
-    padding-left: 10px; /* Менший відступ для маленьких екранів */
+    padding-left: 10px;
+  }
+  .basicLightbox__placeholder img.auto-zoomed {
+    transform: scale(1.8);
   }
 }
